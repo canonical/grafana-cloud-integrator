@@ -1,0 +1,30 @@
+# This file defines charm config options, and populates the Configure tab on Charmhub.
+# If your charm does not require configuration options, delete this file entirely.
+#
+# See https://juju.is/docs/config for guidance.
+
+options:
+  prometheus-url:
+    description: >
+      The full URL of the Prometheus remote write endpoint provided by
+      Grafana Cloud.
+    value: ""
+    type: string
+  loki-url:
+    description: >
+      The full URL of the Loki Push API endpoint provided by
+      Grafana Cloud.
+    value: ""
+    type: string
+  username:
+    description: >
+      The username used to authenticate to the cloud services provided by
+      Grafana Cloud.
+    value: ""
+    type: string
+  password:
+    description: >
+      The password (API Key/Token) used to authenticate to the cloud
+      services provided by Grafana Cloud.
+    value: ""
+    type: string

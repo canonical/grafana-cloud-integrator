@@ -1,0 +1,20 @@
+name: grafana-cloud-integrator
+display-name: Grafana Cloud Integrator
+summary: Configures Grafana Agent to ship telemetry to Grafana Cloud.
+description: |
+  Charm for configuring Grafana Agent to ship telemetry to Grafana Cloud.
+
+  This charm allows the administrator to configure upstream endpoints, as well
+  as credentials, for shipping telemetry from a Juju deployed Grafana Agent
+  to Grafana Cloud.
+
+  
+  This charm is useful when running the stack on-premise isn't desired, or
+  when an additional off-premise storage is used for redundancy.
+
+  This charm is useful for juju administrators who want to leverage the
+  observability relations provided by COS for use with Grafana Cloud.
+
+provides:
+  grafana-cloud-config:
+    interface: grafana_cloud_config
