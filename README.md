@@ -10,9 +10,9 @@ Use links instead.
 
 # Grafana Cloud Charmed Integrator for Kubernetes 
 
-[![CharmHub Badge](https://charmhub.io/grafana-cloud-integrator/badge.svg)](https://charmhub.io/prometheus-k8s)
-[![Release to Edge](https://github.com/canonical/grafana-cloud-integrator/actions/workflows/release-edge.yaml/badge.svg)](https://github.com/canonical/prometheus-k8s-operator/actions/workflows/release-edge.yaml)
-[![Release Libraries](https://github.com/canonical/grafana-cloud-integrator/actions/workflows/release-libs.yaml/badge.svg)](https://github.com/canonical/prometheus-k8s-operator/actions/workflows/release-libs.yaml)
+[![CharmHub Badge](https://charmhub.io/grafana-cloud-integrator/badge.svg)](https://charmhub.io/grafana-cloud-integrator)
+[![Release to Edge](https://github.com/canonical/grafana-cloud-k8s-integrator/actions/workflows/release-edge.yaml/badge.svg)](https://github.com/canonical/grafana-cloud-k8s-integrator/actions/workflows/release-edge.yaml)
+[![Release Libraries](https://github.com/canonical/grafana-cloud-k8s-integrator/actions/workflows/release-libs.yaml/badge.svg)](https://github.com/canonical/grafana-cloud-k8s-integrator/actions/workflows/release-libs.yaml)
 [![Discourse Status](https://img.shields.io/discourse/status?server=https%3A%2F%2Fdiscourse.charmhub.io&style=flat&label=CharmHub%20Discourse)](https://discourse.charmhub.io)
 
 ## Description
