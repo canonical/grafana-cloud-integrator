@@ -29,8 +29,8 @@ class TestCharm(unittest.TestCase):
             Then it should toggle configuration status of both to false 
         """
         self.harness.update_config()
-        self.assertFalse(self.harness.charm._prom_configured)
-        self.assertFalse(self.harness.charm._loki_configured)
+        self.assertFalse(self.harness.charm.prom_configured)
+        self.assertFalse(self.harness.charm.loki_configured)
         self.assertIsInstance(self.harness.model.unit.status, BlockedStatus)
 
 
@@ -45,8 +45,8 @@ class TestCharm(unittest.TestCase):
             "prometheus-url": "https://example.org"
         })
 
-        self.assertTrue(self.harness.charm._prom_configured)
-        self.assertFalse(self.harness.charm._loki_configured)
+        self.assertTrue(self.harness.charm.prom_configured)
+        self.assertFalse(self.harness.charm.loki_configured)
         self.assertIsInstance(self.harness.model.unit.status, BlockedStatus)
 
 
@@ -61,8 +61,8 @@ class TestCharm(unittest.TestCase):
             "loki-url": "https://example.org"
         })
 
-        self.assertTrue(self.harness.charm._loki_configured)
-        self.assertFalse(self.harness.charm._prom_configured)
+        self.assertTrue(self.harness.charm.loki_configured)
+        self.assertFalse(self.harness.charm.prom_configured)
         self.assertIsInstance(self.harness.model.unit.status, BlockedStatus)
 
 

@@ -45,13 +45,13 @@ class GrafanaCloudIntegratorCharm(CharmBase):
         if not self.credentials_configured:
             return BlockedStatus("Credentials missing")
 
-        if not self._loki_configured and not self._prom_configured:
+        if not self.loki_configured and not self.prom_configured:
             return BlockedStatus("No outputs configured")
 
-        if not self._prom_configured:
+        if not self.prom_configured:
             return ActiveStatus("Metrics disabled")
 
-        if not self._loki_configured:
+        if not self.loki_configured:
             return ActiveStatus("Logs disabled")
 
         return ActiveStatus("")
@@ -61,6 +61,7 @@ class GrafanaCloudIntegratorCharm(CharmBase):
 
     @property
     def credentials_configured(self):
+        """Checks whether the Grafana Cloud credentials has been configured."""
         fields = (
             self.model.config.get("username", ""),
             self.model.config.get("password", ""),
@@ -69,11 +70,13 @@ class GrafanaCloudIntegratorCharm(CharmBase):
         return all(self._is_not_empty(x) for x in fields)
 
     @property
-    def _loki_configured(self):
+    def loki_configured(self):
+        """Checks whether the Loki URL has been configured."""
         return self._is_not_empty(self.model.config.get("loki-url", ""))
 
     @property
-    def _prom_configured(self):
+    def prom_configured(self):
+        """Checks whether the Prometheus URL has been configured."""
         return self._is_not_empty(self.model.config.get("prometheus-url", ""))
 
 
