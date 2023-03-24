@@ -25,7 +25,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
     charm = await ops_test.build_charm(".")
 
     # Deploy the charm and wait for active/idle status
-    await ops_test.model.deploy(await charm, application_name=APP_NAME)
+    await ops_test.model.deploy(charm, application_name=APP_NAME)
     await ops_test.model.set_config(
         {
             "username": "a-username",
