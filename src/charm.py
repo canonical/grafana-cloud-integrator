@@ -61,7 +61,7 @@ class GrafanaCloudIntegratorCharm(CharmBase):
 
     @property
     def credentials_configured(self):
-        """Checks whether the Grafana Cloud credentials has been configured."""
+        """Whether the administrator has configured a username and password."""
         fields = (
             self.model.config.get("username", ""),
             self.model.config.get("password", ""),
