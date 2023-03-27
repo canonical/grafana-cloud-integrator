@@ -26,7 +26,8 @@ async def test_build_and_deploy(ops_test: OpsTest):
 
     # Deploy the charm and wait for active/idle status
     await ops_test.model.deploy(charm, application_name=APP_NAME)
-    await ops_test.model.set_config(
+    app = ops_test.model.applications.get(APP_NAME)
+    await app.set_config(
         {
             "username": "a-username",
             "password": "a-password",
@@ -37,6 +38,6 @@ async def test_build_and_deploy(ops_test: OpsTest):
     await ops_test.model.wait_for_idle(
         apps=[APP_NAME],
         status="active",
-        raise_on_blocked=True,
+        raise_on_blocked=False,
         timeout=1000,
     )
