@@ -45,7 +45,7 @@ class GrafanaCloudConfigRequirer(Object):
         super().__init__(charm, relation_name)
         self._charm = charm
         self._relation_name = relation_name
-        
+
         for event in self._change_events:
             self.framework.observe(event, self._on_relation_changed)
 
@@ -109,6 +109,20 @@ class GrafanaCloudConfigRequirer(Object):
             and self._is_not_empty(self.loki_url))
 
     @property
+    def loki_endpoint(self) -> dict:
+        """Return the loki endpoint dict."""
+        if not self.loki_ready:
+            return {}
+
+        return {
+            "url": self.loki_url,
+            "basic_auth": {
+                "username": self.credentials.username,
+                "password": self.credentials.password,
+            },
+        }
+
+    @property
     def prometheus_ready(self):
         return (
             self._is_not_empty(self.credentials.username)
@@ -116,9 +130,23 @@ class GrafanaCloudConfigRequirer(Object):
             and self._is_not_empty(self.prometheus_url))
 
     @property
+    def prometheus_endpoint(self) -> dict:
+        """Return the prometheus endpoint dict."""
+        if not self.prometheus_ready:
+            return {}
+
+        return {
+            "url": self.prometheus_url,
+            "basic_auth": {
+                "username": self.credentials.username,
+                "password": self.credentials.password,
+            },
+        }
+
+    @property
     def loki_url(self):
         return self._data.get("loki_url", "")
-    
+
     @property
     def prometheus_url(self):
         return self._data.get("prometheus_url", "")
