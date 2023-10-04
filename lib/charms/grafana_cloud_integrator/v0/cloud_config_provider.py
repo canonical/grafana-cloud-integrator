@@ -5,7 +5,7 @@ from ops.framework import EventBase, EventSource, Object, ObjectEvents
 
 LIBID = "2a48eccc49a346f08879b11ecab4465a"
 LIBAPI = 0
-LIBPATCH = 2
+LIBPATCH = 3
 
 DEFAULT_RELATION_NAME = "grafana-cloud-config"
 
