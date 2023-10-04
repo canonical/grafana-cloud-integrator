@@ -41,7 +41,7 @@ class TestCharm(unittest.TestCase):
         self.harness.update_config({"prometheus-url": "https://example.org"})
         self.assertTrue(self.harness.charm.prom_configured)
         self.assertFalse(self.harness.charm.loki_configured)
-        self.assertIsInstance(self.harness.model.unit.status, BlockedStatus)
+        self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
 
     def test_loki_url_is_propagated(self):
         """Test that when a Loki URL has been configured, the charm knows about it."""
@@ -53,7 +53,7 @@ class TestCharm(unittest.TestCase):
 
         self.assertTrue(self.harness.charm.loki_configured)
         self.assertFalse(self.harness.charm.prom_configured)
-        self.assertIsInstance(self.harness.model.unit.status, BlockedStatus)
+        self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
 
     def test_credentials_are_propagated_only_username(self):
         """Test that when only username has been configured, the charm knows about it."""
