@@ -49,9 +49,6 @@ class GrafanaCloudConfigProvider(Object):
         if not self._charm.unit.is_leader():
             return
         
-        if not self._charm.credentials_configured:
-            return
-
         for relation in self._charm.model.relations[self._relation_name]:
             databag = relation.data[self._charm.app]
             for k, v in (

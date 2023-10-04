@@ -42,9 +42,6 @@ class GrafanaCloudIntegratorCharm(CharmBase):
         self.unit.status = self.app.status = self._get_status()
 
     def _get_status(self):
-        if not self.credentials_configured:
-            return BlockedStatus("Credentials missing")
-
         if not self.loki_configured and not self.prom_configured:
             return BlockedStatus("No outputs configured")
 
