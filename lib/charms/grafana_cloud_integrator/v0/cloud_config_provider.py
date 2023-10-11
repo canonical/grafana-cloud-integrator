@@ -51,11 +51,9 @@ class GrafanaCloudConfigProvider(Object):
         
         for relation in self._charm.model.relations[self._relation_name]:
             databag = relation.data[self._charm.app]
-            for k, v in (
-                ("username", self._credentials.username),
-                ("password", self._credentials.password),
-            ):                
-                databag[k] = v 
+            if self._credentials:
+                databag["username"] = self._credentials.username
+                databag["password"] = self._credentials.password
             if self._charm.loki_configured:
                 databag["loki_url"] = self._loki_url
             if self._charm.prom_configured:
