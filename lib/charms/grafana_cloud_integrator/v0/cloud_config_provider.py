@@ -5,7 +5,7 @@ from ops.framework import EventBase, EventSource, Object, ObjectEvents
 
 LIBID = "2a48eccc49a346f08879b11ecab4465a"
 LIBAPI = 0
-LIBPATCH = 2
+LIBPATCH = 3
 
 DEFAULT_RELATION_NAME = "grafana-cloud-config"
 
@@ -49,16 +49,11 @@ class GrafanaCloudConfigProvider(Object):
         if not self._charm.unit.is_leader():
             return
         
-        if not self._charm.credentials_configured:
-            return
-
         for relation in self._charm.model.relations[self._relation_name]:
             databag = relation.data[self._charm.app]
-            for k, v in (
-                ("username", self._credentials.username),
-                ("password", self._credentials.password),
-            ):                
-                databag[k] = v 
+            if self._credentials:
+                databag["username"] = self._credentials.username
+                databag["password"] = self._credentials.password
             if self._charm.loki_configured:
                 databag["loki_url"] = self._loki_url
             if self._charm.prom_configured:
