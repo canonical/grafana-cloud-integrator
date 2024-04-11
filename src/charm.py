@@ -6,6 +6,8 @@
 
 """Grafana Cloud Integrator Charm."""
 
+import typing
+
 from charms.grafana_cloud_integrator.v0.cloud_config_provider import (
     Credentials,
     GrafanaCloudConfigProvider,
@@ -24,11 +26,11 @@ class GrafanaCloudIntegratorCharm(CharmBase):
         self._config = GrafanaCloudConfigProvider(
             self,
             Credentials(
-                self.model.config.get("username", ""),
-                self.model.config.get("password", ""),
+                typing.cast(str, self.model.config.get("username", "")),
+                typing.cast(str, self.model.config.get("password", "")),
             ),
-            loki_url=self.model.config.get("loki-url", ""),
-            prometheus_url=self.model.config.get("prometheus-url", ""),
+            loki_url=typing.cast(str, self.model.config.get("loki-url", "")),
+            prometheus_url=typing.cast(str, self.model.config.get("prometheus-url", "")),
         )
 
         for event in [
