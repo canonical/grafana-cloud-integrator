@@ -1,6 +1,10 @@
 name: grafana-cloud-integrator
 display-name: Grafana Cloud Integrator
 summary: Configures Grafana Agent to ship telemetry to Grafana Cloud.
+website: https://charmhub.io/grafana-cloud-integrator
+source: https://github.com/canonical/grafana-cloud-integrator
+issues: https://github.com/canonical/grafana-cloud-integrator/issues
+docs: https://discourse.charmhub.io/t/grafana-cloud-integrator-docs-index/14793
 description: |
   Charm for configuring Grafana Agent to ship telemetry to Grafana Cloud.
 
