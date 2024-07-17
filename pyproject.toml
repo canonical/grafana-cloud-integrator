@@ -15,7 +15,7 @@ line-length = 99
 target-version = ["py38"]
 
 # Linting tools configuration
-[tool.ruff]
+[tool.ruff.lint]
 line-length = 99
 extend-exclude = ["__pycache__", "*.egg_info"]
 select = ["E", "W", "F", "C", "N", "R", "D", "I001"]
@@ -25,7 +25,7 @@ ignore = ["E501", "D107"]
 # D100, D101, D102, D103: Ignore missing docstrings in tests
 per-file-ignores = {"tests/*" = ["D100","D101","D102","D103","D104"]}
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
 # Static analysis tols configuration
@@ -33,3 +33,7 @@ convention = "google"
 extraPaths = ["lib"]
 pythonVersion = "3.8"
 pythonPlatform = "All"
+
+[tool.codespell]
+skip = ".git,.tox,build,venv*"
+ignore-words-list = "assertIn"
