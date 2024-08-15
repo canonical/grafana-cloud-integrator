@@ -6,9 +6,10 @@
 import unittest
 
 import ops.testing
-from charm import GrafanaCloudIntegratorCharm
 from ops.model import ActiveStatus, BlockedStatus
 from ops.testing import Harness
+
+from charm import GrafanaCloudIntegratorCharm
 
 
 class TestCharm(unittest.TestCase):
