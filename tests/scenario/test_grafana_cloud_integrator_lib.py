@@ -28,13 +28,7 @@ def mycharm_context():
     )
 
 
-@pytest.mark.parametrize(
-    "is_leader",
-    [
-        (True,),
-        (False,),
-    ],
-)
+@pytest.mark.parametrize("is_leader", [(True,), (False,)])
 def test_requirer_emits_cloud_config_available_event_on_relation_changed(is_leader, mycharm_context):
     # GIVEN a grafana-cloud-config relation and a leadership status
     grafana_cloud_config_relation = Relation("grafana-cloud-config")
@@ -47,13 +41,7 @@ def test_requirer_emits_cloud_config_available_event_on_relation_changed(is_lead
     assert any(event for event in mycharm_context.emitted_events if isinstance(event, CloudConfigAvailableEvent))
 
 
-@pytest.mark.parametrize(
-    "is_leader",
-    [
-        (True,),
-        (False,),
-    ],
-)
+@pytest.mark.parametrize("is_leader", [(True,), (False,)])
 def test_requirer_emits_cloud_config_revoked_event_on_relation_broken(is_leader, mycharm_context):
     # GIVEN a grafana-cloud-config relation
     grafana_cloud_config_relation = Relation("grafana-cloud-config")
