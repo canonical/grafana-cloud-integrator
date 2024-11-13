@@ -37,7 +37,9 @@ def test_requirer_emits_cloud_config_available_event_on_relation_changed(
     state = State(leader=is_leader, relations=[grafana_cloud_config_relation])
 
     # WHEN the grafana-cloud-config relation changes
-    mycharm_context.run(grafana_cloud_config_relation.changed_event, state)
+    mycharm_context.run(
+        mycharm_context.on.relation_changed(relation=grafana_cloud_config_relation), state
+    )
 
     # THEN the CloudConfigAvailableEvent event is emitted
     assert any(
@@ -55,7 +57,9 @@ def test_requirer_emits_cloud_config_revoked_event_on_relation_broken(is_leader,
     state = State(leader=is_leader, relations=[grafana_cloud_config_relation])
 
     # WHEN the grafana-cloud-config relation changes
-    mycharm_context.run(grafana_cloud_config_relation.broken_event, state)
+    mycharm_context.run(
+        mycharm_context.on.relation_broken(relation=grafana_cloud_config_relation), state
+    )
 
     # THEN the CloudConfigAvailableEvent event is emitted
     assert any(
