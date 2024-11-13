@@ -57,7 +57,7 @@ class GrafanaCloudConfigRequirer(Object):
 
     def _on_relation_broken(self, event):
         self.on.cloud_config_revoked.emit()  # pyright: ignore
-    
+
     def _is_not_empty(self, s):
         return bool(s and not s.isspace())
 
@@ -83,7 +83,7 @@ class GrafanaCloudConfigRequirer(Object):
     @property
     def credentials(self):
         """Return the credentials, if any; otherwise, return None."""
-        if (username := self._data.get("username").strip()) and (password := self._data.get("password").strip()):
+        if (username := self._data.get("username", "").strip()) and (password := self._data.get("password", "").strip()):
             return Credentials(username, password)
         return None
 
@@ -116,7 +116,7 @@ class GrafanaCloudConfigRequirer(Object):
         """Return the prometheus endpoint dict."""
         if not self.prometheus_ready:
             return {}
-        
+
         endpoint = {}
         endpoint["url"] = self.prometheus_url
         if self.credentials:
