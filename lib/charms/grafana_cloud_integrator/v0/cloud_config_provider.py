@@ -1,15 +1,15 @@
 """Grafana Cloud Integrator Configuration Requirer."""
 
-from ops.framework import EventBase, EventSource, Object, ObjectEvents
-
+from ops.framework import Object
 
 LIBID = "2a48eccc49a346f08879b11ecab4465a"
 LIBAPI = 0
-LIBPATCH = 3
+LIBPATCH = 4
 
 DEFAULT_RELATION_NAME = "grafana-cloud-config"
 
 class Credentials:
+    """Credentials for the remote endpoints."""
     def __init__(self, username, password):
         self.username = username
         self.password = password
@@ -18,10 +18,10 @@ class GrafanaCloudConfigProvider(Object):
     """Provider side of the Grafana Cloud Config relation."""
 
     def __init__(
-        self, 
-        charm, 
-        credentials: Credentials, 
-        prometheus_url: str, 
+        self,
+        charm,
+        credentials: Credentials,
+        prometheus_url: str,
         loki_url: str,
         relation_name: str = DEFAULT_RELATION_NAME,
     ):
@@ -41,14 +41,14 @@ class GrafanaCloudConfigProvider(Object):
             self._charm.on.config_changed,
         ]:
             self.framework.observe(
-               event, 
+               event,
                self._on_relation_changed,
             )
 
     def _on_relation_changed(self, event):
         if not self._charm.unit.is_leader():
             return
-        
+
         for relation in self._charm.model.relations[self._relation_name]:
             databag = relation.data[self._charm.app]
             if self._credentials:
@@ -58,3 +58,4 @@ class GrafanaCloudConfigProvider(Object):
                 databag["loki_url"] = self._loki_url
             if self._charm.prom_configured:
                 databag["prometheus_url"] = self._prometheus_url
+            databag["tls-ca"] = self._charm.config.get("tls-ca", "")
