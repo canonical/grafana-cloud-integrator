@@ -8,11 +8,14 @@ LIBPATCH = 4
 
 DEFAULT_RELATION_NAME = "grafana-cloud-config"
 
+
 class Credentials:
     """Credentials for the remote endpoints."""
+
     def __init__(self, username, password):
         self.username = username
         self.password = password
+
 
 class GrafanaCloudConfigProvider(Object):
     """Provider side of the Grafana Cloud Config relation."""
@@ -41,8 +44,8 @@ class GrafanaCloudConfigProvider(Object):
             self._charm.on.config_changed,
         ]:
             self.framework.observe(
-               event,
-               self._on_relation_changed,
+                event,
+                self._on_relation_changed,
             )
 
     def _on_relation_changed(self, event):
