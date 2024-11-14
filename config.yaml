@@ -28,3 +28,7 @@ options:
       services provided by Grafana Cloud.
     value: ""
     type: string
+  tls-ca:
+    description: |
+      The CA cert used by the remote Prometheus and Loki endpoints.
+    type: string
