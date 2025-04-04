@@ -1,17 +1,76 @@
 # This file configures Charmcraft.
 # See https://juju.is/docs/sdk/charmcraft-config for guidance.
-
+name: grafana-cloud-integrator
 type: charm
-bases:
-  - build-on:
-    - name: ubuntu
-      channel: "22.04"
-    run-on:
-    - name: ubuntu
-      channel: "22.04"
-  - build-on:
-    - name: ubuntu
-      channel: "20.04"
-    run-on:
-    - name: ubuntu
-      channel: "20.04"
+summary: Configures Grafana Agent to ship telemetry to Grafana Cloud.
+description: |
+  Charm for configuring Grafana Agent to ship telemetry to Grafana Cloud.
+
+  This charm allows the administrator to configure upstream endpoints, as well
+  as credentials, for shipping telemetry from a Juju deployed Grafana Agent
+  to Grafana Cloud.
+
+  
+  This charm is useful when running the stack on-premise isn't desired, or
+  when an additional off-premise storage is used for redundancy.
+
+  This charm is useful for juju administrators who want to leverage the
+  observability relations provided by COS for use with Grafana Cloud.
+
+links:
+  documentation: https://discourse.charmhub.io/t/grafana-cloud-integrator-docs-index/14793
+  website: https://charmhub.io/grafana-cloud-integrator
+  source: https://github.com/canonical/grafana-cloud-integrator
+  issues: https://github.com/canonical/grafana-cloud-integrator/issues
+
+platforms:
+  ubuntu@20.04:amd64:
+  ubuntu@22.04:amd64:
+
+parts:
+  charm:
+    source: .
+    plugin: uv
+    build-packages: [git]
+    build-snaps: [astral-uv]
+    override-build: |
+      craftctl default
+      git describe --always > $CRAFT_PART_INSTALL/version
+
+provides:
+  grafana-cloud-config:
+    interface: grafana_cloud_config
+    optional: true
+    description: |
+      Forwards the configured endpoints to another charm.
+
+config:
+  options:
+    prometheus-url:
+      description: >
+        The full URL of the Prometheus remote write endpoint provided by
+        Grafana Cloud.
+      value: ""
+      type: string
+    loki-url:
+      description: >
+        The full URL of the Loki Push API endpoint provided by
+        Grafana Cloud.
+      value: ""
+      type: string
+    username:
+      description: >
+        The username used to authenticate to the cloud services provided by
+        Grafana Cloud.
+      value: ""
+      type: string
+    password:
+      description: >
+        The password (API Key/Token) used to authenticate to the cloud
+        services provided by Grafana Cloud.
+      value: ""
+      type: string
+    tls-ca:
+      description: |
+        The CA cert used by the remote Prometheus and Loki endpoints.
+      type: string
