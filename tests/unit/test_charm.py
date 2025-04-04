@@ -14,7 +14,7 @@ from charm import GrafanaCloudIntegratorCharm
 
 class TestCharm(unittest.TestCase):
     def setUp(self):
-        ops.testing.SIMULATE_CAN_CONNECT = True
+        ops.testing.SIMULATE_CAN_CONNECT = True  # pyright: ignore
         self.addCleanup(setattr, ops.testing, "SIMULATE_CAN_CONNECT", False)
 
         self.harness = Harness(GrafanaCloudIntegratorCharm)
