@@ -3,6 +3,7 @@
 # See LICENSE file for licensing details.
 
 import logging
+import os
 from pathlib import Path
 
 import pytest
@@ -11,7 +12,7 @@ from pytest_operator.plugin import OpsTest
 
 logger = logging.getLogger(__name__)
 
-METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
+METADATA = yaml.safe_load(Path("./charmcraft.yaml").read_text())
 APP_NAME = METADATA["name"]
 
 
@@ -22,11 +23,17 @@ async def test_build_and_deploy(ops_test: OpsTest):
     Assert on the unit status before any relations/configurations take place.
     """
     # Build and deploy charm from local source folder
-    charm = await ops_test.build_charm(".")
+    assert ops_test.model
+
+    if os.environ.get("CHARM_PATH"):
+        charm = os.environ.get("CHARM_PATH")
+    else:
+        charm = await ops_test.build_charm(".")
 
     # Deploy the charm and wait for active/idle status
     await ops_test.model.deploy(charm, application_name=APP_NAME)
     app = ops_test.model.applications.get(APP_NAME)
+    assert app
     await app.set_config(
         {
             "username": "a-username",
