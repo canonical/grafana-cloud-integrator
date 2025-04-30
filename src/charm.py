@@ -42,7 +42,8 @@ class GrafanaCloudIntegratorCharm(CharmBase):
         unset = (k for k, v in output_configs.items() if not v)
 
         if not (self.config.get("username", "") and self.config.get("password", "")):
-            event.add_status(BlockedStatus("username/password not configured."))
+            # FIXME: should this be blocked in fact?
+            event.add_status(ActiveStatus("username/password not configured."))
 
         if not any(output_configs.values()):
             event.add_status(BlockedStatus("No outputs configured"))

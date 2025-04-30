@@ -58,9 +58,9 @@ class TestCharm(unittest.TestCase):
         # When only username is configured
         # Then it should toggle credentials configured to false
 
-        self.harness.update_config({"username": "a-username"})
+        self.harness.update_config({"username": "a-username", "loki-url": "foo"})
         self.harness.evaluate_status()
-        self.assertIsInstance(self.harness.model.unit.status, BlockedStatus)
+        self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
 
     def test_credentials_are_propagated_only_password(self):
         """Test that when only password has been configured, the charm knows about it."""
@@ -68,9 +68,9 @@ class TestCharm(unittest.TestCase):
         # When only password  is configured
         # Then it should toggle credentials configured to false
 
-        self.harness.update_config({"password": "a-password"})
+        self.harness.update_config({"password": "a-password", "loki-url": "foo"})
         self.harness.evaluate_status()
-        self.assertIsInstance(self.harness.model.unit.status, BlockedStatus)
+        self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
 
     def test_credentials_are_propagated_both(self):
         """Test that when credentials have been configured, the charm knows about it."""
@@ -78,7 +78,7 @@ class TestCharm(unittest.TestCase):
         # When both username and password are configured
         # Then it should toggle credentials configured to true
 
-        self.harness.update_config({"username": "a-username", "password": "a-password"})
+        self.harness.update_config({"username": "a-username", "password": "a-password", "loki-url": "https://example.org"})
         self.harness.evaluate_status()
         self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
 
