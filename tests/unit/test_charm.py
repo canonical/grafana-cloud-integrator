@@ -29,8 +29,7 @@ class TestCharm(unittest.TestCase):
         # Then it should toggle configuration status of both to false
 
         self.harness.update_config()
-        self.assertFalse(self.harness.charm.prom_configured)
-        self.assertFalse(self.harness.charm.loki_configured)
+        self.harness.evaluate_status()
         self.assertIsInstance(self.harness.model.unit.status, BlockedStatus)
 
     def test_prometheus_url_is_propagated(self):
@@ -40,8 +39,7 @@ class TestCharm(unittest.TestCase):
         # Then it should toggle prom configured to true
 
         self.harness.update_config({"prometheus-url": "https://example.org"})
-        self.assertTrue(self.harness.charm.prom_configured)
-        self.assertFalse(self.harness.charm.loki_configured)
+        self.harness.evaluate_status()
         self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
 
     def test_loki_url_is_propagated(self):
@@ -51,9 +49,7 @@ class TestCharm(unittest.TestCase):
         # Then it should toggle loki configured to true
 
         self.harness.update_config({"loki-url": "https://example.org"})
-
-        self.assertTrue(self.harness.charm.loki_configured)
-        self.assertFalse(self.harness.charm.prom_configured)
+        self.harness.evaluate_status()
         self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
 
     def test_credentials_are_propagated_only_username(self):
@@ -63,7 +59,7 @@ class TestCharm(unittest.TestCase):
         # Then it should toggle credentials configured to false
 
         self.harness.update_config({"username": "a-username"})
-        self.assertFalse(self.harness.charm.credentials_configured)
+        self.harness.evaluate_status()
         self.assertIsInstance(self.harness.model.unit.status, BlockedStatus)
 
     def test_credentials_are_propagated_only_password(self):
@@ -73,7 +69,7 @@ class TestCharm(unittest.TestCase):
         # Then it should toggle credentials configured to false
 
         self.harness.update_config({"password": "a-password"})
-        self.assertFalse(self.harness.charm.credentials_configured)
+        self.harness.evaluate_status()
         self.assertIsInstance(self.harness.model.unit.status, BlockedStatus)
 
     def test_credentials_are_propagated_both(self):
@@ -83,7 +79,8 @@ class TestCharm(unittest.TestCase):
         # Then it should toggle credentials configured to true
 
         self.harness.update_config({"username": "a-username", "password": "a-password"})
-        self.assertTrue(self.harness.charm.credentials_configured)
+        self.harness.evaluate_status()
+        self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
 
     def test_everything_is_configured(self):
         """Test that when everything is configured, the charm knows it."""
@@ -99,6 +96,5 @@ class TestCharm(unittest.TestCase):
                 "loki-url": "https://example.org",
             }
         )
-
-        self.assertTrue(self.harness.charm.credentials_configured)
+        self.harness.evaluate_status()
         self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)

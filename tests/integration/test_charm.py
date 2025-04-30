@@ -39,6 +39,7 @@ async def test_build_and_deploy(ops_test: OpsTest):
             "username": "a-username",
             "password": "a-password",
             "loki-url": "http://a-loki-url",
+            "tempo-url": "http://a-tempo-url",
             "prometheus-url": "http://a-prom-url",
         }
     )
