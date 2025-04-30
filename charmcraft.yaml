@@ -52,6 +52,12 @@ config:
         Grafana Cloud.
       value: ""
       type: string
+    tempo-url:
+      description: >
+        The full URL of the Tempo remote write endpoint provided by
+        Grafana Cloud.
+      value: ""
+      type: string
     loki-url:
       description: >
         The full URL of the Loki Push API endpoint provided by

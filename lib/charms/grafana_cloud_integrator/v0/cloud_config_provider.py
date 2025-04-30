@@ -4,7 +4,7 @@ from ops.framework import Object
 
 LIBID = "2a48eccc49a346f08879b11ecab4465a"
 LIBAPI = 0
-LIBPATCH = 4
+LIBPATCH = 5
 
 DEFAULT_RELATION_NAME = "grafana-cloud-config"
 
@@ -26,6 +26,7 @@ class GrafanaCloudConfigProvider(Object):
         credentials: Credentials,
         prometheus_url: str,
         loki_url: str,
+        tempo_url: str,
         relation_name: str = DEFAULT_RELATION_NAME,
     ):
         super().__init__(charm, relation_name)
@@ -33,6 +34,7 @@ class GrafanaCloudConfigProvider(Object):
         self._credentials = credentials
         self._prometheus_url = prometheus_url
         self._loki_url = loki_url
+        self._tempo_url = tempo_url
         self._relation_name = relation_name
 
         relation_events = self._charm.on[relation_name]
@@ -54,11 +56,15 @@ class GrafanaCloudConfigProvider(Object):
 
         for relation in self._charm.model.relations[self._relation_name]:
             databag = relation.data[self._charm.app]
+
+            # FIXME: this is always true
             if self._credentials:
                 databag["username"] = self._credentials.username
                 databag["password"] = self._credentials.password
-            if self._charm.loki_configured:
+            if self._loki_url:
                 databag["loki_url"] = self._loki_url
-            if self._charm.prom_configured:
+            if self._tempo_url:
+                databag["tempo_url"] = self._tempo_url
+            if self._prometheus_url:
                 databag["prometheus_url"] = self._prometheus_url
             databag["tls-ca"] = self._charm.config.get("tls-ca", "")
