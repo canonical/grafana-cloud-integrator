@@ -36,7 +36,7 @@ class GrafanaCloudIntegratorCharm(CharmBase):
 
     def _on_collect_unit_status(self, event: CollectStatusEvent):
         output_configs = {
-            telemetry: bool(self.config.get(f"{key}-url", "").strip()) for
+            telemetry: bool(typing.cast(str, self.config.get(f"{key}-url", "")).strip()) for
             key, telemetry in (("loki", "Logs"), ("tempo", "Traces"), ("prometheus", "Metrics"))
         }
         unset = (k for k, v in output_configs.items() if not v)
