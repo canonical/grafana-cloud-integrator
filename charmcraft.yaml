@@ -24,6 +24,7 @@ links:
   issues: https://github.com/canonical/grafana-cloud-integrator/issues
 
 platforms:
+  ubuntu@22.04:amd64:
   ubuntu@24.04:amd64:
 
 parts:
