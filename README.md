@@ -126,7 +126,7 @@ If you also need to provide a custom CA, create `grafana-cloud-ca.pem`:
 Then configure the charm:
 
 ```sh
-juju deploy grafana-cloud-integrator --channel=stable
+juju deploy grafana-cloud-integrator
 
 juju config grafana-cloud-integrator \
   prometheus-url="https://prometheus-prod-39-prod-eu-north-0.grafana.net/api/prom/push"
