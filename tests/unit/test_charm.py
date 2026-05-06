@@ -171,3 +171,22 @@ loki:
             self.harness.model.unit.status,
             BlockedStatus("Do not set both shared username/password and signal-credentials"),
         )
+
+    def test_incomplete_shared_credentials_do_not_block_signal_credentials(self):
+        """A leftover shared password without username should not block signal credentials."""
+        self.harness.update_config(
+            {
+                "loki-url": "https://logs.example.org/loki/api/v1/push",
+                "username": "",
+                "password": "leftover-shared-pass",
+                "signal-credentials": """
+loki:
+  username: "639149"
+  password: "loki-token"
+""",
+            }
+        )
+
+        self.harness.evaluate_status()
+
+        self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)

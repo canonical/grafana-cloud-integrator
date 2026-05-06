@@ -48,10 +48,8 @@ class GrafanaCloudIntegratorCharm(CharmBase):
 
     @property
     def _shared_credentials_configured(self) -> bool:
-        """Check whether either shared credential config key is set."""
-        username = typing.cast(str, self.config.get("username", "")).strip()
-        password = typing.cast(str, self.config.get("password", "")).strip()
-        return bool(username or password)
+        """Check whether a complete shared credential pair is configured."""
+        return self._shared_credentials is not None
 
     @property
     def _signal_credentials_raw(self) -> str:
