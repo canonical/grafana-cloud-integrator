@@ -98,3 +98,76 @@ class TestCharm(unittest.TestCase):
         )
         self.harness.evaluate_status()
         self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
+
+    def test_signal_credentials_can_configure_loki_without_shared_username_password(self):
+        """Signal-specific credentials should be accepted without shared credentials."""
+        self.harness.update_config(
+            {
+                "loki-url": "https://logs.example.org/loki/api/v1/push",
+                "signal-credentials": """
+loki:
+  username: "639149"
+  password: "loki-token"
+""",
+            }
+        )
+
+        self.harness.evaluate_status()
+
+        self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
+
+    def test_signal_credentials_can_configure_pyroscope_without_shared_username_password(self):
+        """Signal-specific credentials should be accepted for Pyroscope."""
+        self.harness.update_config(
+            {
+                "pyroscope-url": "https://profiles.example.org",
+                "signal-credentials": """
+pyroscope:
+  username: "profile-user"
+  password: "profile-token"
+""",
+            }
+        )
+
+        self.harness.evaluate_status()
+
+        self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
+
+    def test_signal_credentials_can_configure_otlp_with_instance_id(self):
+        """OTLP signal credentials should accept instance-id in place of username."""
+        self.harness.update_config(
+            {
+                "otlp-url": "https://otlp-gateway.example.org/otlp",
+                "signal-credentials": """
+otlp:
+  instance-id: "otlp-instance"
+  password: "otlp-token"
+""",
+            }
+        )
+
+        self.harness.evaluate_status()
+
+        self.assertIsInstance(self.harness.model.unit.status, ActiveStatus)
+
+    def test_mixed_shared_and_signal_credentials_are_blocked(self):
+        """Shared credentials and signal credentials must not be set together."""
+        self.harness.update_config(
+            {
+                "loki-url": "https://logs.example.org/loki/api/v1/push",
+                "username": "shared-user",
+                "password": "shared-pass",
+                "signal-credentials": """
+loki:
+  username: "639149"
+  password: "loki-token"
+""",
+            }
+        )
+
+        self.harness.evaluate_status()
+
+        self.assertEqual(
+            self.harness.model.unit.status,
+            BlockedStatus("Do not set both shared username/password and signal-credentials"),
+        )

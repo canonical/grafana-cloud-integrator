@@ -58,6 +58,17 @@ config:
         Grafana Cloud.
       value: ""
       type: string
+    otlp-url:
+      description: >
+        The full URL of the OTLP ingest endpoint provided by Grafana Cloud.
+      value: ""
+      type: string
+    pyroscope-url:
+      description: >
+        The full URL of the Pyroscope profiling write endpoint provided by
+        Grafana Cloud.
+      value: ""
+      type: string
     loki-url:
       description: >
         The full URL of the Loki Push API endpoint provided by
@@ -74,6 +85,25 @@ config:
       description: >
         The password (API Key/Token) used to authenticate to the cloud
         services provided by Grafana Cloud.
+      value: ""
+      type: string
+    signal-credentials:
+      description: >
+        Structured per-signal credentials as YAML. Use this instead of the
+        shared username/password when different Grafana Cloud signals require
+        different credentials. Example:
+          prometheus:
+            username: "1076854"
+            password: "..."
+          loki:
+            username: "639149"
+            password: "..."
+          pyroscope:
+            username: "424242"
+            password: "..."
+          otlp:
+            instance-id: "1076854"
+            password: "..."
       value: ""
       type: string
     tls-ca:

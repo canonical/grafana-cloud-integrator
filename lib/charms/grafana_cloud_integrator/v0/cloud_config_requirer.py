@@ -6,7 +6,7 @@ from ops.framework import EventBase, EventSource, Object, ObjectEvents
 
 LIBID = "e6f580481c1b4388aa4d2cdf412a47fa"
 LIBAPI = 0
-LIBPATCH = 8
+LIBPATCH = 11
 
 DEFAULT_RELATION_NAME = "grafana-cloud-config"
 
@@ -93,6 +93,31 @@ class GrafanaCloudConfigRequirer(Object):
         return None
 
     @property
+    def prometheus_credentials(self):
+        """Return Prometheus credentials, falling back to shared credentials."""
+        return self._signal_credentials("prometheus")
+
+    @property
+    def loki_credentials(self):
+        """Return Loki credentials, falling back to shared credentials."""
+        return self._signal_credentials("loki")
+
+    @property
+    def tempo_credentials(self):
+        """Return Tempo credentials, falling back to shared credentials."""
+        return self._signal_credentials("tempo")
+
+    @property
+    def otlp_credentials(self):
+        """Return OTLP credentials, falling back to shared credentials."""
+        return self._signal_credentials("otlp")
+
+    @property
+    def pyroscope_credentials(self):
+        """Return Pyroscope credentials, falling back to shared credentials."""
+        return self._signal_credentials("pyroscope")
+
+    @property
     def loki_ready(self):
         """Check whether there is a non-empty Loki url in relation data."""
         return self._is_not_empty(self.loki_url)
@@ -105,10 +130,10 @@ class GrafanaCloudConfigRequirer(Object):
 
         endpoint = {}
         endpoint["url"] = self.loki_url
-        if self.credentials:
+        if self.loki_credentials:
             endpoint["basic_auth"] = {
-                "username": self.credentials.username,
-                "password": self.credentials.password,
+                "username": self.loki_credentials.username,
+                "password": self.loki_credentials.password,
             }
         return endpoint
 
@@ -123,6 +148,16 @@ class GrafanaCloudConfigRequirer(Object):
         return self._is_not_empty(self.tempo_url)
 
     @property
+    def otlp_ready(self):
+        """Check whether there is a non-empty OTLP url in relation data."""
+        return self._is_not_empty(self.otlp_url)
+
+    @property
+    def pyroscope_ready(self):
+        """Check whether there is a non-empty Pyroscope url in relation data."""
+        return self._is_not_empty(self.pyroscope_url)
+
+    @property
     def tls_ca_ready(self):
         """Check whether there is a TLS CA in relation data."""
         return self._is_not_empty(self.tls_ca)
@@ -135,10 +170,10 @@ class GrafanaCloudConfigRequirer(Object):
 
         endpoint = {}
         endpoint["url"] = self.prometheus_url
-        if self.credentials:
+        if self.prometheus_credentials:
             endpoint["basic_auth"] = {
-                "username": self.credentials.username,
-                "password": self.credentials.password,
+                "username": self.prometheus_credentials.username,
+                "password": self.prometheus_credentials.password,
             }
         return endpoint
 
@@ -153,9 +188,19 @@ class GrafanaCloudConfigRequirer(Object):
         return self._data.get("tempo_url", "")
 
     @property
+    def otlp_url(self) -> str:
+        """The OTLP endpoint from relation data."""
+        return self._data.get("otlp_url", "")
+
+    @property
     def prometheus_url(self) -> str:
         """The Prometheus endpoint from relation data."""
         return self._data.get("prometheus_url", "")
+
+    @property
+    def pyroscope_url(self) -> str:
+        """The Pyroscope endpoint from relation data."""
+        return self._data.get("pyroscope_url", "")
 
     @property
     def tls_ca(self) -> str:
@@ -168,3 +213,13 @@ class GrafanaCloudConfigRequirer(Object):
             logger.info("%s %s %s", relation, self._relation_name, relation.data[relation.app])
             return relation.data[relation.app]
         return {}
+
+    def _signal_credentials(self, signal_name):
+        """Return signal-specific credentials or fall back to the shared pair."""
+        username_key = "{}_username".format(signal_name)
+        password_key = "{}_password".format(signal_name)
+        if (username := self._data.get(username_key, "").strip()) and (
+            password := self._data.get(password_key, "").strip()
+        ):
+            return Credentials(username, password)
+        return self.credentials

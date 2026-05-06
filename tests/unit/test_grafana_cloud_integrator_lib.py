@@ -5,6 +5,7 @@ from charms.grafana_cloud_integrator.v0.cloud_config_requirer import (
     GrafanaCloudConfigRequirer,
 )
 from ops import CharmBase, Framework
+from ops.testing import Harness
 from scenario import Context, Relation, State
 
 
@@ -67,3 +68,103 @@ def test_requirer_emits_cloud_config_revoked_event_on_relation_broken(is_leader,
         for event in mycharm_context.emitted_events
         if isinstance(event, CloudConfigRevokedEvent)
     )
+
+
+def test_requirer_reads_signal_specific_credentials(mycharm_context):
+    harness = Harness(
+        MyCharm,
+        meta="""
+name: my-charm
+requires:
+  grafana-cloud-config:
+    interface: grafana_cloud_config
+""",
+    )
+    harness.begin()
+    relation_id = harness.add_relation("grafana-cloud-config", "grafana-cloud-integrator")
+    harness.add_relation_unit(relation_id, "grafana-cloud-integrator/0")
+    harness.update_relation_data(
+        relation_id,
+        "grafana-cloud-integrator",
+        {
+            "prometheus_url": "https://prom.example/api/prom/push",
+            "prometheus_username": "1076854",
+            "prometheus_password": "prom-token",
+            "loki_url": "https://logs.example/loki/api/v1/push",
+            "loki_username": "639149",
+            "loki_password": "loki-token",
+            "otlp_url": "https://otlp.example/otlp",
+            "otlp_username": "otlp-instance",
+            "otlp_password": "otlp-token",
+            "pyroscope_url": "https://profiles.example",
+            "pyroscope_username": "profile-user",
+            "pyroscope_password": "profile-token",
+        },
+    )
+
+    cloud = harness.charm.cloud
+    assert cloud.prometheus_url == "https://prom.example/api/prom/push"
+    prometheus_credentials = cloud.prometheus_credentials
+    assert prometheus_credentials is not None
+    assert prometheus_credentials.username == "1076854"
+    assert prometheus_credentials.password == "prom-token"
+    assert cloud.loki_url == "https://logs.example/loki/api/v1/push"
+    loki_credentials = cloud.loki_credentials
+    assert loki_credentials is not None
+    assert loki_credentials.username == "639149"
+    assert loki_credentials.password == "loki-token"
+    assert cloud.otlp_url == "https://otlp.example/otlp"
+    otlp_credentials = cloud.otlp_credentials
+    assert otlp_credentials is not None
+    assert otlp_credentials.username == "otlp-instance"
+    assert otlp_credentials.password == "otlp-token"
+    assert cloud.pyroscope_url == "https://profiles.example"
+    pyroscope_credentials = cloud.pyroscope_credentials
+    assert pyroscope_credentials is not None
+    assert pyroscope_credentials.username == "profile-user"
+    assert pyroscope_credentials.password == "profile-token"
+
+
+def test_requirer_falls_back_to_shared_credentials(mycharm_context):
+    harness = Harness(
+        MyCharm,
+        meta="""
+name: my-charm
+requires:
+  grafana-cloud-config:
+    interface: grafana_cloud_config
+""",
+    )
+    harness.begin()
+    relation_id = harness.add_relation("grafana-cloud-config", "grafana-cloud-integrator")
+    harness.add_relation_unit(relation_id, "grafana-cloud-integrator/0")
+    harness.update_relation_data(
+        relation_id,
+        "grafana-cloud-integrator",
+        {
+            "prometheus_url": "https://prom.example/api/prom/push",
+            "loki_url": "https://logs.example/loki/api/v1/push",
+            "otlp_url": "https://otlp.example/otlp",
+            "pyroscope_url": "https://profiles.example",
+            "username": "shared-user",
+            "password": "shared-pass",
+        },
+    )
+
+    cloud = harness.charm.cloud
+    prometheus_credentials = cloud.prometheus_credentials
+    assert prometheus_credentials is not None
+    assert prometheus_credentials.username == "shared-user"
+    assert prometheus_credentials.password == "shared-pass"
+    loki_credentials = cloud.loki_credentials
+    assert loki_credentials is not None
+    assert loki_credentials.username == "shared-user"
+    assert loki_credentials.password == "shared-pass"
+    otlp_credentials = cloud.otlp_credentials
+    assert otlp_credentials is not None
+    assert otlp_credentials.username == "shared-user"
+    assert otlp_credentials.password == "shared-pass"
+    pyroscope_credentials = cloud.pyroscope_credentials
+    assert pyroscope_credentials is not None
+    assert pyroscope_credentials.username == "shared-user"
+    assert pyroscope_credentials.password == "shared-pass"
