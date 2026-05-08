@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 from charms.grafana_cloud_integrator.v0.cloud_config_requirer import (
     CloudConfigAvailableEvent,
@@ -168,3 +170,31 @@ requires:
     assert pyroscope_credentials is not None
     assert pyroscope_credentials.username == "shared-user"
     assert pyroscope_credentials.password == "shared-pass"
+
+
+def test_requirer_does_not_log_relation_databag_contents():
+    harness = Harness(
+        MyCharm,
+        meta="""
+name: my-charm
+requires:
+  grafana-cloud-config:
+    interface: grafana_cloud_config
+""",
+    )
+    harness.begin()
+    relation_id = harness.add_relation("grafana-cloud-config", "grafana-cloud-integrator")
+    harness.add_relation_unit(relation_id, "grafana-cloud-integrator/0")
+    harness.update_relation_data(
+        relation_id,
+        "grafana-cloud-integrator",
+        {
+            "username": "sensitive-user",
+            "password": "sensitive-pass",
+        },
+    )
+
+    with patch("charms.grafana_cloud_integrator.v0.cloud_config_requirer.logger.info") as info_log:
+        assert harness.charm.cloud.credentials is not None
+
+    info_log.assert_not_called()
